@@ -1,4 +1,7 @@
-Lists C/C++ definitions, etc. for files in a directory.
+q: Prints C/C++ definitions, usages, etc.
+-----------------------------------------
+
+Prints C/C++ definitions, etc. for files in a directory.
 
 The point is to easily grep for locations of class definitions, function uses
 and so on.
