@@ -81,7 +81,8 @@ def read_source(node):
 
 def hilite(loc, ext, name, line):
     e = 999999999999
-    if loc.file is not None and loc.file.name == ext.end.file.name:
+    if (loc.file is not None and ext.end.file is not None and loc.file.name ==
+            ext.end.file.name):
         if loc.line == ext.end.line:
             s = loc.column-1
             e = ext.end.column-1
