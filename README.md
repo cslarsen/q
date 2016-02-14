@@ -46,8 +46,8 @@ and polish.
 Requirements
 ------------
 
-    * libclang for Python
-    * pip install ansicolors (well, not strictly used right now)
+  * libclang for Python
+  * pip install ansicolors (well, not strictly used right now)
 
 Note that the hash bang sets `LD_LIBRARY_PATH` to a specific value I use on
 *my* machine. I know it's ugly, but this is sooo alpha.
