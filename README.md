@@ -11,15 +11,19 @@ just do:
     $ q -r | grep function-decl:foo_file
     tests/foo/foo.c:1:5:function-decl:foo_file:int foo_file() {
 
-If you want to find out where this function is called from, do:
+To find out where this function is called from:
 
     $ q -r | grep call:foo_file
     tests/foo/foo.c:7:14:call:foo_file:  return 1 + foo_file();
 
-For large code bases, you can just dump everything to a file and use that:
+Of course, if you have several functions called `foo_file` f, q won't discern
+between them. It just prints what it finds, gleefully ignoring stuff like
+namespaces and so on.
+
+Bonus feature: For large code bases, just dump everything to a file and use
+that:
 
     $ q -r > .qcache
-
     $ grep call:foo_file .qcache
     tests/foo/foo.c:7:14:call:foo_file:  return 1 + foo_file();
 
