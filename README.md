@@ -5,8 +5,8 @@ Prints C/C++ definitions, usages and so on for all files in the current
 directory.
 
 The point is to easily grep for class definitions, calls to specific functions,
-and so on. For example, to find the definition of the function `foo_file`, just
-do:
+and so on. For example, to find the declaration of the function `foo_file`,
+just do:
 
     $ q -r | grep function-decl:foo_file
     tests/foo/foo.c:1:5:function-decl:foo_file:int foo_file() {
