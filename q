@@ -50,7 +50,8 @@ def check_clang():
         print("Try this:\nLD_LIBRARY_PATH=`llvm-config --libdir`")
         sys.exit(1)
 
-_color = lambda x: colors.bold(colors.red(x))
+_color = lambda x: x
+#_color = lambda x: colors.bold(colors.red(x))
 #_color = colors.bold
 
 _kind_name = {
