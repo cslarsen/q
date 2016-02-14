@@ -38,7 +38,7 @@ Rationale
 
 I've been looking for a tool like this for some time, but haven't found
 anything. (Perhaps I haven't looked hard enough). If you know any, please let
-me know!
+me know! (Or let me know how ctags actually works)
 
 But if you like this one, let me know as well, and I just might add some spit
 and polish.
