@@ -16,12 +16,18 @@ To find out where this function is called from:
     $ q -r | grep call:foo_file
     tests/foo/foo.c:7:14:call:foo_file:  return 1 + foo_file();
 
-Of course, if you have several functions called `foo_file` f, q won't discern
-between them. It just prints what it finds, gleefully ignoring stuff like
-namespaces and so on.
+Of course, q doesn't care about namespaces, compilation units or stuff like
+that, so it won't discern between multiple `foo_file` functions.
 
-Bonus feature: For large code bases, just dump everything to a file and use
-that:
+To find calls to either `foo` or `bar`:
+
+    $ q -r | egrep 'call:(foo|bar):'
+    tests/test.cpp:40:3:call:foo:  f.foo();
+    tests/test.cpp:41:3:call:bar:  f.bar();
+    tests/test.cpp:42:3:call:foo:  foo();
+    tests/test.cpp:43:3:call:bar:  bar();
+
+For large code bases, you can just dump everything to a cache:
 
     $ q -r > .qcache
     $ grep call:foo_file .qcache
@@ -30,19 +36,21 @@ that:
 Rationale
 ---------
 
-I've been looking for such a tool for some time, but I couldn't find any. So
-this is something I've quickly bashed together. If you know any such tools,
-please let me know. But if you like this one, let me know as well, and I might
-work some more on it.
+I've been looking for a tool like this for some time, but haven't found
+anything. (Perhaps I haven't looked hard enough). If you know any, please let
+me know!
+
+But if you like this one, let me know as well, and I just might add some spit
+and polish.
 
 Requirements
 ------------
 
     * libclang for Python
-    * pip install ansicolors
+    * pip install ansicolors (well, not strictly used right now)
 
-Note that the hashbang sets `LD_LIBRARY_PATH` to a specific value I use on my
-machine. It's there because I'm the only user as of now. :)
+Note that the hash bang sets `LD_LIBRARY_PATH` to a specific value I use on
+*my* machine. I know it's ugly, but this is sooo alpha.
 
 Program arguments
 -----------------

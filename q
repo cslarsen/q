@@ -34,16 +34,16 @@ Examples:
     ...
 """
 
-from clang.cindex import CursorKind as K, TokenKind as T
+#import colors
+from clang.cindex import CursorKind as K
 import clang.cindex
-import colors
 import os
 import sys
 
 def check_clang():
     try:
-        import clang.cindex
-        clang.cindex.Index.create()
+        import clang.cindex as _clang_cindex
+        _clang_cindex.Index.create()
     except Exception as e:
         print(e)
         print("")
@@ -97,7 +97,6 @@ def parse(filename):
     tu = index.parse(None, [filename], options=options)
 
     def grep(node, only_known=True):
-        loc = node.location
         fname = "" if node.location.file is None else node.location.file.name
         name = node.spelling if node.spelling is not None else node.displayname
         extract = read_source(node) if node.location.file is not None else ""
