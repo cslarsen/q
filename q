@@ -13,6 +13,21 @@ import multiprocessing
 import os
 import sys
 
+# CursorKinds to display
+_kind_name = {
+    K.CALL_EXPR: "call",
+    K.CLASS_DECL: "class-decl",
+    K.CONSTRUCTOR: "ctor",
+    K.CXX_METHOD: "method",
+    K.DESTRUCTOR: "dtor",
+    K.FUNCTION_DECL: "function-decl",
+    K.MEMBER_REF_EXPR: "member-ref",
+#    K.PARM_DECL: "param-decl",
+    K.USING_DECLARATION: "using-decl",
+    K.USING_DIRECTIVE: "using-dir",
+    K.VAR_DECL: "var-decl",
+}
+
 def check_clang():
     try:
         import clang.cindex as _clang_cindex
@@ -25,19 +40,6 @@ def check_clang():
 
 def colorize(x):
     return x
-
-_kind_name = {
-    K.CLASS_DECL: "class-decl",
-    K.CONSTRUCTOR: "ctor",
-    K.CXX_METHOD: "method",
-    K.DESTRUCTOR: "dtor",
-    K.FUNCTION_DECL: "function-decl",
-    K.PARM_DECL: "param-decl",
-    K.VAR_DECL: "var-decl",
-    K.MEMBER_REF_EXPR: "member-ref",
-    K.CALL_EXPR: "call",
-    K.ENUM_DECL: "enum-decl",
-}
 
 def kind_str(kind):
     return _kind_name.get(kind, str(kind))
@@ -97,7 +99,6 @@ def iscppfilename(filename):
 
 def main():
     check_clang()
-
     recursive = True if "-r" in sys.argv[1:] else False
 
     def find_files(path):
@@ -116,8 +117,11 @@ def main():
                 for child in find_files(item):
                     yield child
 
-    for file in find_files("."):
-        parse(file)
+    pool = multiprocessing.Pool()
+    pool.map(parse, list(find_files(".")))
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        pass
