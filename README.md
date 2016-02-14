@@ -16,8 +16,8 @@ To find out where this function is called from:
     $ q -r | grep call:foo_file
     tests/foo/foo.c:7:14:call:foo_file:  return 1 + foo_file();
 
-Of course, q doesn't care about namespaces, compilation units or stuff like
-that, so it won't discern between multiple `foo_file` functions.
+Of course, q doesn't care about stuff like namespaces, compilation units and so
+on, and thus won't discern between multiple `foo_file` functions.
 
 To find calls to either `foo` or `bar`:
 
