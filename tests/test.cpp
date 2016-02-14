@@ -2,9 +2,16 @@
 #include <stdlib.h>
 #include <inttypes.h>
 
+class Foo; // forward
+void foo(); // forward
+
 class Foo {
 public:
   Foo()
+  {
+  }
+
+  ~Foo()
   {
   }
 
