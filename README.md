@@ -6,6 +6,11 @@ Prints C/C++ definitions, etc. for files in a directory.
 The point is to easily grep for locations of class definitions, function uses
 and so on.
 
+For example, to find the definition of the `foo_file` function:
+
+    $ q -r | grep function-decl | grep foo_file
+    tests/foo/foo.c:1:5:function-decl:foo_file:int foo_file() {
+
 Requirements
 ------------
 
