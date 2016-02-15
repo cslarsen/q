@@ -55,8 +55,15 @@ added `hooks/gtags`:
     fi
     global -u
 
-It basically places `GTAGS` etc in your project root. The `hooks/post-rewrite`
-does this:
+It basically places `GTAGS` etc in your project root. You probably want to
+place the GTAGS files elsewhere and then move them over when they're finished,
+so that `global` won't attempt to use a half-finished gtags file (since it's
+run int he background; see below).
+
+Also, you can probably do `gtags --single-update filename` as in the original
+script with `git ls`, which will be faster.
+
+The `hooks/post-rewrite` does this:
 
     #! /bin/sh
     case "$1" in
