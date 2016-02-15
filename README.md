@@ -76,8 +76,13 @@ And `post-merge`, `post-commit` and `post-checkout` do:
     .git/hooks/gtags >/dev/null 2>&1 &
 
 Seems to work nicely, except that many of our `.h` files are actually C++, so I
-need to figure out how to get gtags to parse them as such (`gtags -e` indicates
+need to figure out how to get gtags to parse them as such (`gtags --explain` indicates
 that they are parsed as C files).
+
+To fix that, I just added this into `~/.globalrc`:
+
+    default:\
+      :langmap=cpp\:.c++.cc.hh.cpp.cxx.hxx.hpp.C.H.c.h:
 
 More command line usage
 -----------------------
