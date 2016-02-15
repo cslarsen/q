@@ -5,6 +5,9 @@ This looked nice at the beginning, but was way to slow for large projects.
 And, anyway, there's gtags, which looks really great. So this project is dead
 and only left here for posterity.
 
+I'm not a fan of ctags (probably because I don't know much about it yet), but
+gtags seems pretty neat!
+
 But here's a quick guide on using gtags.
 
 Building gtags on Redhat
@@ -40,6 +43,51 @@ http://tbaggery.com/2011/08/08/effortless-ctags-with-git.html
 And use gtags instead of ctags. Then all your git operations (checkout, pull,
 rebase, etc) will reindex in the background.
 
+You can probably do this cleverly, but to get started, this is what I did. I
+added `hooks/gtags`:
+
+    #! /bin/sh
+    set -e
+    dir="`git rev-parse --git-dir`"
+    cd $dir/..
+    if [ ! -f GTAGS ]; then
+      gtags
+    fi
+    global -u
+
+It basically places `GTAGS` etc in your project root. The `hooks/post-rewrite`
+does this:
+
+    #! /bin/sh
+    case "$1" in
+      rebase) exec .git/hooks/post-merge ;;
+    esac
+
+And `post-merge`, `post-commit` and `post-checkout` do:
+
+    #! /bin/sh
+    .git/hooks/gtags >/dev/null 2>&1 &
+
+Seems to work nicely, except that many of our `.h` files are actually C++, so I
+need to figure out how to get gtags to parse them as such (`gtags -e` indicates
+that they are parsed as C files).
+
+More command line usage
+-----------------------
+
+To *grep* for something, do
+
+    $ global -g pattern
+
+I've added an alias that displays some details:
+
+    $ alias gg='global -x'
+
+So now I can do:
+
+    $ gg foobar # exact search
+    $ gg -g foobar # grep-like search
+
 In vim
 ------
 
@@ -51,8 +99,6 @@ You can also use gtags.vim for vim. To do that:
 Now you can do
 
     :Gtags func
-
-Seems pretty neat!
 
 OLD: q: Prints C/C++ definitions, usages, etc.
 ==============================================
