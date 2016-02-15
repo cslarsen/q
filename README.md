@@ -31,6 +31,15 @@ To locate functions:
     $ global -x func
     ...
 
+Reindexing with git
+-------------------
+
+See
+http://tbaggery.com/2011/08/08/effortless-ctags-with-git.html
+
+And use gtags instead of ctags. Then all your git operations (checkout, pull,
+rebase, etc) will reindex in the background.
+
 In vim
 ------
 
