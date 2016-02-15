@@ -104,6 +104,12 @@ def parse(filename):
             if not Options.follow_includes:
                 return
 
+        # TODO: There is a lot of semantic-level optimizations possible here.
+        # Basically, we traverse the whole AST. If we're just interested in
+        # certain things like function and class defs, we can parse from the
+        # top and only look for functions/classes, but also traverse down
+        # namespace declarations and so on.
+
         fname = node_filename(node)
         name = node.spelling if node.spelling is not None else node.displayname
         extract = read_source(node) if node.location.file is not None else ""
