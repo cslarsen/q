@@ -1,5 +1,52 @@
-q: Prints C/C++ definitions, usages, etc.
------------------------------------------
+Update: Use gtags instead :-)
+-----------------------------
+
+This looked nice at the beginning, but was way to slow for large projects.
+And, anyway, there's gtags, which looks really great. So this project is dead
+and only left here for posterity.
+
+But here's a quick guide on using gtags.
+
+Building gtags on Redhat
+------------------------
+
+Got a linker error. You need to link with libtinfo:
+
+    $ tar xf global*
+    $ cd global-*
+    $ LIBS=-ltinfo ./configure --prefix=...
+    $ make -j check
+    $ make -j install
+
+Creating and using gtags
+------------------------
+
+Now, to create tags for a large project:
+
+    $ cd proj/
+    $ gtags
+
+To locate functions:
+
+    $ global -x func
+    ...
+
+In vim
+------
+
+You can also use gtags.vim for vim. To do that:
+
+    $ vim
+    :source .../gtags.vim
+
+Now you can do
+
+    :Gtags func
+
+Seems pretty neat!
+
+OLD: q: Prints C/C++ definitions, usages, etc.
+==============================================
 
 Prints C/C++ definitions, usages and so on for all files in the current
 directory.
@@ -60,8 +107,7 @@ Program arguments
 License
 -------
 
-Copyright (C) 2016 Christian Stigen Larsen  
-Distributed under the LGPL v2.1 or later, or GPL v3 or later.
+Public domain
 
 Examples
 --------
