@@ -10,21 +10,10 @@ Distributed under the LGPL v2.1 or later, or GPL v3 or later.
 from clang.cindex import CursorKind as K
 import clang.cindex
 import colors # ansicolors package
+import multiprocessing
 import os
 import sys
 
-# CursorKinds to display
-_kind_name = {
-    K.CALL_EXPR: "call",
-    K.CLASS_DECL: "class-decl",
-    K.CONSTRUCTOR: "ctor",
-    K.CXX_METHOD: "method",
-    K.DESTRUCTOR: "dtor",
-    K.FUNCTION_DECL: "function-decl",
-    K.MEMBER_REF_EXPR: "member-ref",
-    K.USING_DECLARATION: "using-decl",
-    K.USING_DIRECTIVE: "using-dir",
-}
 
 class Options:
     colorize = False
@@ -41,6 +30,31 @@ class Options:
     # From command line
     paths = []
 
+    # Use multiprocessing
+    parallel = False
+
+    # CursorKinds to display
+    kinds = {
+        K.CALL_EXPR: "call",
+        K.CLASS_DECL: "class-decl",
+        K.CONSTRUCTOR: "ctor",
+        K.CXX_METHOD: "method",
+        K.DESTRUCTOR: "dtor",
+        K.FUNCTION_DECL: "function-decl",
+        K.MEMBER_REF_EXPR: "member-ref",
+        K.USING_DECLARATION: "using-decl",
+        K.USING_DIRECTIVE: "using-dir",
+    }
+
+    @staticmethod
+    def kind_str(kind):
+        return Options.kinds.get(kind, str(kind))
+
+    @staticmethod
+    def known_kind(kind):
+        return kind in Options.kinds
+
+
 def check_clang():
     try:
         import clang.cindex as _clang_cindex
@@ -56,12 +70,6 @@ def colorize(x):
         return x
     else:
         return colors.bold(colors.magenta(x))
-
-def kind_str(kind):
-    return _kind_name.get(kind, str(kind))
-
-def known_kind(kind):
-    return kind in _kind_name
 
 def read_source(node):
     with open(node.location.file.name, "rt") as f:
@@ -100,14 +108,14 @@ def parse(filename):
         name = node.spelling if node.spelling is not None else node.displayname
         extract = read_source(node) if node.location.file is not None else ""
 
-        if fname is not None and known_kind(node.kind):
+        if fname is not None and Options.known_kind(node.kind):
             rname = os.path.relpath(fname)
             if not (rname.startswith("..") and Options.skip_dotted_files):
                 print("%s:%d:%d:%s:%s:%s" % (
                     os.path.relpath(fname),
                     node.location.line,
                     node.location.column,
-                    kind_str(node.kind),
+                    Options.kind_str(node.kind),
                     colorize(name),
                     hilite(node.location, node.extent, name, extract)))
 
@@ -148,17 +156,12 @@ def find_files():
                 for child in find(item):
                     yield child
 
-    # Currently does not work very well (KeyboardInterrupt, hangs with pipes,
-    # and so on; lots of stuff to figure out I guess)
-    #pool = multiprocessing.Pool()
-    #pool.map(parse, find_files("."))
-
-    paths = set()
+    files = set()
     for path in Options.paths:
         for p in find(path):
-            paths.add(p)
+            files.add(p)
 
-    return paths
+    return files
 
 def main():
     parse_options()
@@ -169,8 +172,15 @@ def main():
     #pool = multiprocessing.Pool()
     #pool.map(parse, find_files())
 
-    for name in find_files():
-        parse(name)
+    files = find_files()
+
+    if Options.parallel:
+        # Does not work very well, currently
+        pool = multiprocessing.Pool()
+        pool.map(parse, files)
+    else:
+        for name in files:
+            parse(name)
 
 if __name__ == "__main__":
     try:
